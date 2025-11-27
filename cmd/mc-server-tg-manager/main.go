@@ -5,6 +5,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"mc-server-tg-manager/internal/client"
@@ -19,6 +20,11 @@ func main() {
 	rconPort := os.Getenv("RCON_PORT")
 	rconPassword := os.Getenv("RCON_PASSWORD")
 	containerName := os.Getenv("CONTAINER_NAME")
+	adminIDStr := os.Getenv("ADMIN_ID")
+	adminID, err := strconv.ParseInt(adminIDStr, 10, 64)
+	if err != nil {
+		log.Fatal("Invalid ADMIN_ID")
+	}
 
 	rconClient, err := client.WaitForRCON(fmt.Sprintf("%s:%s", rconHost, rconPort), rconPassword)
 	if err != nil {
@@ -87,6 +93,11 @@ func main() {
 			}
 
 		case "/stop":
+			if chatID != adminID {
+				bot.Send(tgbotapi.NewMessage(chatID, "❌ only admin can stop this server"))
+				return
+			}
+
 			status, err := dockerClient.Status()
 			if err != nil {
 				log.Printf("failed to get server status: %s\n", err)
