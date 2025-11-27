@@ -13,6 +13,7 @@ import (
 )
 
 func main() {
+	log.Println("Starting mc-server-tg-manager")
 	token := os.Getenv("TELEGRAM_TOKEN")
 	rconHost := os.Getenv("RCON_HOST")
 	rconPort := os.Getenv("RCON_PORT")
@@ -35,11 +36,12 @@ func main() {
 		1*time.Minute,  // check interval
 		15*time.Minute, // timout for shutdown
 	)
+	log.Println("Starting monitoring")
 	monitor.Start()
 
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed to connect to tg api: %w", err)
 	}
 
 	u := tgbotapi.NewUpdate(0)

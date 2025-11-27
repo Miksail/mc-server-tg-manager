@@ -2,6 +2,7 @@ package client
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/gorcon/rcon"
@@ -18,6 +19,7 @@ func WaitForRCON(host string, password string) (client *RCONClient, err error) {
 		if err == nil {
 			return
 		}
+		log.Println("Waiting for RCON connection to host")
 		time.Sleep(15 * time.Second)
 	}
 	return
