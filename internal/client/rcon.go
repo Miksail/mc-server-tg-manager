@@ -2,12 +2,25 @@ package client
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/gorcon/rcon"
 )
 
 type RCONClient struct {
 	conn *rcon.Conn
+}
+
+// WaitForRCON wait 10 minutes for connect to RCON
+func WaitForRCON(host string, password string) (client *RCONClient, err error) {
+	for i := 0; i < 40; i++ {
+		client, err = NewRCONClient(host, password)
+		if err == nil {
+			return
+		}
+		time.Sleep(15 * time.Second)
+	}
+	return
 }
 
 func NewRCONClient(address string, password string) (*RCONClient, error) {

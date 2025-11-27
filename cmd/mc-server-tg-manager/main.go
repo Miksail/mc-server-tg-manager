@@ -19,7 +19,7 @@ func main() {
 	rconPassword := os.Getenv("RCON_PASSWORD")
 	containerName := os.Getenv("CONTAINER_NAME")
 
-	rconClient, err := client.NewRCONClient(fmt.Sprintf("%s:%s", rconHost, rconPort), rconPassword)
+	rconClient, err := client.WaitForRCON(fmt.Sprintf("%s:%s", rconHost, rconPort), rconPassword)
 	if err != nil {
 		log.Fatal("Cannot connect to RCON:", err)
 	}
@@ -85,7 +85,12 @@ func main() {
 			}
 
 		case "/stop":
-			status, _ := dockerClient.Status()
+			status, err := dockerClient.Status()
+			if err != nil {
+				log.Printf("failed to get server status: %s\n", err)
+				bot.Send(tgbotapi.NewMessage(chatID, "Failed to stop server"))
+				continue
+			}
 			if status != model.ServerStatusRunning {
 				bot.Send(tgbotapi.NewMessage(chatID, "Server already stopped"))
 				continue
