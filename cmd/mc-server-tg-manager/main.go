@@ -47,7 +47,7 @@ func main() {
 
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
-		log.Fatalf("failed to connect to tg api: %w", err)
+		log.Fatalf("failed to connect to tg api: %s", err)
 	}
 
 	u := tgbotapi.NewUpdate(0)
