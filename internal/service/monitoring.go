@@ -34,6 +34,7 @@ func (m *ServerMonitor) Start() {
 
 			status, _ := m.docker.Status()
 			if status != model.ServerStatusRunning {
+				m.lastAlive = time.Now()
 				continue
 			}
 
